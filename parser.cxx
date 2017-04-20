@@ -358,17 +358,22 @@ void statement() {
         // we have an assignment
         if (tracesw) trace << "\n Zeile: " << lineno << " assignment";
 
+        if (lookahead != ID) {
+            error(6);
+        }
+
         found = lookup(idname);
 
-        if (found == NULL){
+        if (found == NULL) {
             error(10);
         }
-        if (found->token == PROC || found->token == CONST){
+        if (found->token == PROC || found->token == CONST) {
             error(11);
         }
+
         //todo check type of identifier
         lookfunc();
-        if (lookahead != ASS){
+        if (lookahead != ASS) {
             error(12);
         }
         lookfunc();
@@ -409,12 +414,7 @@ void procdecl() {
     if (lookahead != ID) {
         error(4);
     }
-    lookfunc();
 
-    if (lookahead != SEMICOLON) {
-        error(40);
-    }
-    lookfunc();
 
     if (lookup_in_actsym(idname) != NULL) {
         error(34);
@@ -422,6 +422,13 @@ void procdecl() {
 
     neu = insert(PROC);
     neusym = neu->subsym;
+
+
+    lookfunc();
+    if (lookahead != SEMICOLON) {
+        error(40);
+    }
+    lookfunc();
 
     block(neusym);
 
